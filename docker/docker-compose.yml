@@ -1,0 +1,63 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:10.10
+    container_name: pay_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    expose:
+      - 5432
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+  api:
+    image: theSinner/open-pay:${STAGE}
+    container_name: open_pay_${STAGE}
+    build:
+      context: ./..
+      dockerfile: docker/Dockerfile
+    command: /code/run_api.sh
+    environment:
+      - PYTHONPATH=/code/pay
+      - BASE_URL=https://${STAGE}.openpay.ajorloo.com # YOUR DOMAIN
+      - MEDIA_URL=https://${STAGE}.openpay.ajorloo.com/media/ # <your_domain>/media/
+      - DEBUG_VALUE=TRUE
+      - DB_NAME=postgres
+    volumes:
+      - storage:/storage
+      - media:/code/pay/media/
+    ports:
+      - target: 7000
+        published: ${PUBLISHED_PORT}
+        protocol: tcp
+        mode: ingress
+    depends_on:
+      - db
+      - redis
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  redis:
+    container_name: pay_redis
+    image: redis:5.0.6
+    command: redis-server
+    volumes:
+      - redis:/data
+    expose:
+      - 6379
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+volumes:
+  postgres_data:
+  redis:
+  media:
+  storage:

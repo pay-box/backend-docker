@@ -1,0 +1,3 @@
+[submodule "pay"]
+	path = pay
+	url = https://github.com/pay-box/backend.git
