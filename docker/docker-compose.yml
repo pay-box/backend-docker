@@ -13,16 +13,16 @@ services:
         constraints:
           - node.role == manager
   api:
-    image: theSinner/open-pay:${STAGE}
-    container_name: open_pay_${STAGE}
+    image: theSinner/pay-box:${STAGE}
+    container_name: pay_box_${STAGE}
     build:
       context: ./..
       dockerfile: docker/Dockerfile
     command: /code/run_api.sh
     environment:
       - PYTHONPATH=/code/pay
-      - BASE_URL=https://${STAGE}.openpay.ajorloo.com # YOUR DOMAIN
-      - MEDIA_URL=https://${STAGE}.openpay.ajorloo.com/media/ # <your_domain>/media/
+      - BASE_URL=https://${STAGE}.paybox.site # YOUR DOMAIN
+      - MEDIA_URL=https://${STAGE}.paybox.site/media/ # <your_domain>/media/
       - DEBUG_VALUE=TRUE
       - DB_NAME=postgres
     volumes:
