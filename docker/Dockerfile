@@ -13,11 +13,11 @@ RUN rm -rf /etc/nginx/sites-enabled/*
 
 # Set work directory
 WORKDIR /code
-
 # Install dependencies
-COPY /pay/requirements.pip /code/requirements.pip
+COPY pay/requirements.pip /code/requirements.pip
 RUN pip install -r requirements.pip
 COPY nginx.conf /etc/nginx/conf.d/
+COPY *.sh /code/
 
 # Copy project
 COPY pay /code/pay

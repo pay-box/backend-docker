@@ -13,7 +13,7 @@ services:
         constraints:
           - node.role == manager
   api:
-    image: theSinner/pay-box:${STAGE}
+    image: thesinner/pay-box:${STAGE}
     container_name: pay_box_${STAGE}
     build:
       context: ./..
